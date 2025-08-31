@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Float, ForeignKey
 from sqlalchemy.orm import declarative_base
-from sqlalchemy_utils import ChoiceType
+#from sqlalchemy_utils import ChoiceType
 
 
 # Create the database connection
@@ -20,7 +20,7 @@ class User(Base):
     is_admin = Column(Boolean, default=False)
     is_active = Column(Boolean)
 
-    def __init__(self, name, email, password, is_admi=False, is_active=True):
+    def __init__(self, name, email, password, is_admin=False, is_active=True):
         self.name = name
         self.email = email
         self.password = password
