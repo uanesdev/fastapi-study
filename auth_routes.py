@@ -1,3 +1,4 @@
+from sqlalchemy import false
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
 from main import bcrypt_context
@@ -10,6 +11,14 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 def create_token(user_id: int):
     token = f"jkklshawfbh{user_id}"
     return token
+
+def auth_user(email: str, password: str, session: Session):
+    user = session.query(User).filter(User.email==email).first()
+    if not user:
+        return False
+    elif not bcrypt_context.verify(password, user.password):
+        return False
+    return user
 
 @auth_router.get("/")
 async def home():
@@ -34,7 +43,7 @@ async def create_user(user_schema: UserSchema, session: Session = Depends(get_se
 # login -> email and password -> JWT token -> akldhahdalidhadpas
 @auth_router.post("/login")
 async def login(login_schema: LoginSchema, session: Session = Depends(get_session)):
-    user = session.query(User).filter(User.email==login_schema.email).first()
+    user = auth_user(email= login_schema.email, password= login_schema.password, session= session)
 
     if not user:
         raise HTTPException(status_code = 400, detail= "User not found or user not auth!")
