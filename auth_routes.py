@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends 
+from main import bcrypt_context
 from models import User
 from dependencies import get_session
 
@@ -13,18 +14,13 @@ async def home():
 
 @auth_router.post("/create")
 async def create_user(email:str, password:str, name:str, session = Depends(get_session)):
-    # Esse método possui alguns problemas:
-    # 1 - A Session iniciada não nescessáriamente é fechada (várias conexões com o DB podem gerar erro)
-    # 2 - Simplismente estamos retornando mensagens (devemos retornar os códigos HTTP(2XX, 4XX))
-    # 3 - Os parametros estão de forma despradronizada (podemos simplismente pedir uma instância de User)
-    # 4- Senha não esta criptpgrafada
-    # 5 - As responsabilidades não estão separadas
 
     user = session.query(User).filter(User.email == email).first()
     if user:
         return {"message": "Alredy exist a user with this email"} 
     else:
-        new_user = User(name= name, email= email, password= password)
+        crypt_password = bcrypt_context.hash(password)
+        new_user = User(name= name, email= email, password= crypt_password)
         session.add(new_user)
         session.commit()
         return {"message": "User add with sucess!"}
