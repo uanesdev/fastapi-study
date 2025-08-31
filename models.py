@@ -42,7 +42,7 @@ class Order(Base):
     user = Column(ForeignKey("users.id"))
     price = Column(Float)
 
-    def __init__(self, user, status,  price=0):
+    def __init__(self, user, status= "pending",  price=0):
         self.user = user
         self.status = status
         self.price = price
