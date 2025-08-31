@@ -1,16 +1,21 @@
 from sqlalchemy import false
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.functions import user
 from fastapi import APIRouter, Depends, HTTPException
-from main import bcrypt_context
+from main import SECRET_KEY, bcrypt_context, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from models import User
 from dependencies import get_session
 from schemas import LoginSchema, UserSchema
+from jose import jwt, JWTError
+from datetime import datetime, timedelta, timezone
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 def create_token(user_id: int):
-    token = f"jkklshawfbh{user_id}"
-    return token
+    expire_date = datetime.now(timezone.utc) + timedelta(minutes= ACCESS_TOKEN_EXPIRE_MINUTES)
+    info_dict = {"sub": user_id, "exp": expire_date}
+    encoded_jwt = jwt.encode(info_dict, SECRET_KEY, ALGORITHM)
+    return encoded_jwt
 
 def auth_user(email: str, password: str, session: Session):
     user = session.query(User).filter(User.email==email).first()
