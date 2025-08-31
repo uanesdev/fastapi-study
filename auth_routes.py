@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends 
+from fastapi import APIRouter, Depends, HTTPException
 from main import bcrypt_context
 from models import User
 from dependencies import get_session
@@ -17,11 +17,11 @@ async def create_user(email:str, password:str, name:str, session = Depends(get_s
 
     user = session.query(User).filter(User.email == email).first()
     if user:
-        return {"message": "Alredy exist a user with this email"} 
+        raise HTTPException(status_code=400, detail= "Alredy exist a user with this email") 
     else:
         crypt_password = bcrypt_context.hash(password)
         new_user = User(name= name, email= email, password= crypt_password)
         session.add(new_user)
         session.commit()
-        return {"message": "User add with sucess!"}
+        return {"message": f"User add with sucess! {email}"}
         
