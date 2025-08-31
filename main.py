@@ -1,7 +1,7 @@
-from fastapi import FastAPI
-from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordBearer
-from dotenv import load_dotenv
+from fastapi import FastAPI  # pyright: ignore[reportMissingImports]
+from passlib.context import CryptContext  # pyright: ignore[reportMissingModuleSource]
+from fastapi.security import OAuth2PasswordBearer  # pyright: ignore[reportMissingImports]
+from dotenv import load_dotenv  # pyright: ignore[reportMissingImports]
 import os
 
 load_dotenv()

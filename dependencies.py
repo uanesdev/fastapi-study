@@ -1,5 +1,5 @@
-from jose import JWTError, jwt
-from fastapi import Depends, HTTPException
+from jose import JWTError, jwt  # pyright: ignore[reportMissingModuleSource]
+from fastapi import Depends, HTTPException  # pyright: ignore[reportMissingImports]
 from main import ALGORITHM, SECRET_KEY, oauth2_schema
 from models import User, db
 from sqlalchemy.orm import Session, sessionmaker

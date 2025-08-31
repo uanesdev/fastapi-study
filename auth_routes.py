@@ -1,12 +1,12 @@
 from sqlalchemy import false
 from sqlalchemy.orm import Session, session
 from sqlalchemy.sql.functions import user
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException  # pyright: ignore[reportMissingImports]
 from main import SECRET_KEY, bcrypt_context, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from models import User
 from dependencies import get_session, verify_token
 from schemas import LoginSchema, UserSchema
-from jose import jwt, JWTError
+from jose import jwt, JWTError  # pyright: ignore[reportMissingModuleSource]
 from datetime import datetime, timedelta, timezone
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
