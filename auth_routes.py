@@ -11,8 +11,8 @@ from datetime import datetime, timedelta, timezone
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
-def create_token(user_id: int):
-    expire_date = datetime.now(timezone.utc) + timedelta(minutes= ACCESS_TOKEN_EXPIRE_MINUTES)
+def create_token(user_id: int, duration_token: int = timedelta(minutes= ACCESS_TOKEN_EXPIRE_MINUTES)):
+    expire_date = datetime.now(timezone.utc) + duration_token
     info_dict = {"sub": user_id, "exp": expire_date}
     encoded_jwt = jwt.encode(info_dict, SECRET_KEY, ALGORITHM)
     return encoded_jwt
@@ -55,6 +55,8 @@ async def login(login_schema: LoginSchema, session: Session = Depends(get_sessio
     
     else:
         access_token = create_token(user.id)
+        refresh_token = create_token(user.id, duration_token= timedelta(days=7))
         return {
             "Access token": access_token,
+            "Refrash_token": refresh_token,
             "Token type": "Bearer"}
